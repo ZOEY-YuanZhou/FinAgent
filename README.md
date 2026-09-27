@@ -1,6 +1,6 @@
 # FinAgent-X: Multi-Agent Investment Intelligence Platform
 
-FinAgent-X is an enterprise-grade financial research system built with FastAPI, LangGraph, DuckDB, and Google Gemini LLM. It decouples quantitative risk calculation from LLMs to eliminate token costs while orchestrating specialized agents for qualitative market analysis.
+FinAgent-X is a financial research system built with FastAPI, LangGraph, DuckDB, and Google Gemini LLM. It decouples quantitative risk calculation from LLMs to eliminate token costs while orchestrating specialized agents for qualitative market analysis.
 
 ---
 
@@ -24,6 +24,13 @@ User Request -> FastAPI (/api/v1/analyze)
       3. Sentiment Agent (LLM + DuckDB Cache)
       4. CIO Supervisor Agent (LLM Final Synthesis)
   -> Return Combined JSON Report & Render Dashboard UI
+```
+
+---
+
+## Project Structure
+
+```text
 finagent-x/
 ├── src/
 │   ├── agents/
@@ -40,11 +47,31 @@ finagent-x/
 │       └── ingester.py         # DuckDB cache & market data sync
 ├── requirements.txt
 └── README.md
-Quick Start:
-git clone [https://github.com/YOUR_USERNAME/finagent-x.git](https://github.com/YOUR_USERNAME/finagent-x.git)
-cd finagent-x
+```
+
+---
+
+## Quick Start
+
+### 1. Installation
+
+```bash
+git clone [https://github.com/ZOEY-YuanZhou/finagent-x.git]
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
+```
+
+### 2. Configuration
+
+Create a `.env` file in the project root:
+
+```env
 GEMINI_API_KEY=your_gemini_api_key_here
+```
+
+### 3. Run Application
+
+```bash
 uvicorn src.api.main:app --reload --host 0.0.0.0 --port 8000
+```
