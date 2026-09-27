@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinAgent-X Investment Intelligence Dashboard</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Marked.js for Markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        
+        <!-- Header & Search Form -->
+        <header class="flex flex-col md:flex-row justify-between items-center mb-8 pb-6 border-b border-slate-800 gap-4">
+            <div>
+                <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">
+                    FinAgent-X Intelligence Dashboard
+                </h1>
+                <p class="text-slate-400 text-sm mt-1">Multi-Agent Engine for Fundamentals, Quant Risk, and Market Sentiment</p>
+            </div>
+            
+            <form id="analyzeForm" class="flex gap-3 bg-slate-800 p-2 rounded-xl border border-slate-700">
+                <input type="text" id="ticker" value="NVDA" placeholder="Ticker" 
+                       class="bg-slate-900 text-white px-4 py-2 rounded-lg border border-slate-700 focus:outline-none focus:border-blue-500 uppercase font-mono w-28">
+                <input type="date" id="asOfDate" value="2026-09-01" 
+                       class="bg-slate-900 text-white px-3 py-2 rounded-lg border border-slate-700 focus:outline-none focus:border-blue-500">
+                <button type="submit" id="submitBtn" 
+                        class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-lg font-medium transition flex items-center gap-2">
+                    <span>Analyze</span>
+                </button>
+            </form>
+        </header>
+
+        <!-- Loading Indicator -->
+        <div id="loading" class="hidden text-center py-20">
+            <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent mb-4"></div>
+            <p class="text-slate-400">Coordinating Agents to evaluate fundamentals, quant signals, and market sentiment...</p>
+        </div>
+
+        <!-- Dashboard Content -->
+        <div id="dashboard" class="space-y-6">
+            
+            <!-- CIO Investment Decision Card -->
+            <section class="bg-slate-800 rounded-2xl p-6 border border-slate-700 shadow-xl">
+                <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-700">
+                    <h2 class="text-xl font-bold text-blue-400 flex items-center gap-2">
+                        🎯 CIO Final Investment Decision
+                    </h2>
+                    <span id="targetTicker" class="text-sm font-mono bg-blue-950 text-blue-300 px-3 py-1 rounded-full border border-blue-800">
+                        --
+                    </span>
+                </div>
+                <div id="cioContent" class="prose prose-invert max-w-none text-slate-300 leading-relaxed">
+                    Submit a ticker above to run multi-agent evaluation.
+                </div>
+            </section>
+
+            <!-- Key Quantitative Metrics Grid -->
+            <section class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                    <div class="text-slate-400 text-xs font-medium">Sharpe Ratio</div>
+                    <div id="sharpeVal" class="text-2xl font-bold text-emerald-400 mt-1">--</div>
+                </div>
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                    <div class="text-slate-400 text-xs font-medium">Max Drawdown</div>
+                    <div id="mddVal" class="text-2xl font-bold text-rose-400 mt-1">--</div>
+                </div>
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                    <div class="text-slate-400 text-xs font-medium">Beta</div>
+                    <div id="betaVal" class="text-2xl font-bold text-blue-400 mt-1">--</div>
+                </div>
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                    <div class="text-slate-400 text-xs font-medium">VaR (95%)</div>
+                    <div id="varVal" class="text-2xl font-bold text-amber-400 mt-1">--</div>
+                </div>
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                    <div class="text-slate-400 text-xs font-medium">Risk Level</div>
+                    <div id="riskLevel" class="text-2xl font-bold text-slate-200 mt-1">--</div>
+                </div>
+            </section>
+
+            <!-- Fundamental and Sentiment Dual Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Fundamental Analysis -->
+                <section class="bg-slate-800 rounded-2xl p-6 border border-slate-700">
+                    <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-700">
+                        <h3 class="text-lg font-bold text-emerald-400">📊 Fundamental Analysis</h3>
+                        <span id="fundamentalScore" class="text-xs font-bold bg-emerald-950 text-emerald-300 px-2.5 py-1 rounded-md">
+                            Score: --
+                        </span>
+                    </div>
+                    <div id="fundamentalContent" class="prose prose-invert max-w-none text-slate-300 text-sm leading-relaxed">
+                        --
+                    </div>
+                </section>
+
+                <!-- Sentiment & Macro Analysis -->
+                <section class="bg-slate-800 rounded-2xl p-6 border border-slate-700">
+                    <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-700">
+                        <h3 class="text-lg font-bold text-purple-400">🌐 Market Sentiment & Macro</h3>
+                        <span id="sentimentScore" class="text-xs font-bold bg-purple-950 text-purple-300 px-2.5 py-1 rounded-md">
+                            Sentiment Score: --
+                        </span>
+                    </div>
+                    <div id="sentimentContent" class="prose prose-invert max-w-none text-slate-300 text-sm leading-relaxed">
+                        --
+                    </div>
+                </section>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function extractText(data) {
+            if (!data) return '';
+            if (typeof data === 'string') return data;
+            if (Array.isArray(data) && data.length > 0) {
+                return data[0].text || JSON.stringify(data[0]);
+            }
+            return JSON.stringify(data);
+        }
+
+        document.getElementById('analyzeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const ticker = document.getElementById('ticker').value.trim();
+            const asOfDate = document.getElementById('asOfDate').value;
+            const submitBtn = document.getElementById('submitBtn');
+            const loading = document.getElementById('loading');
+            const dashboard = document.getElementById('dashboard');
+
+            submitBtn.disabled = true;
+            loading.classList.remove('hidden');
+            dashboard.classList.add('opacity-40');
+
+            try {
+                const response = await fetch('/api/v1/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ticker: ticker, as_of_date: asOfDate })
+                });
+
+                const res = await response.json();
+                
+                if (res.status === 'success' && res.data) {
+                    const data = res.data;
+
+                    // 1. Render CIO Decision
+                    document.getElementById('targetTicker').innerText = `${data.ticker} (${data.as_of_date})`;
+                    const rawCioText = extractText(data.final_decision?.recommendation?.summary || data.final_decision?.recommendation);
+                    document.getElementById('cioContent').innerHTML = marked.parse(rawCioText);
+
+                    // 2. Render Quantitative Metrics
+                    const quant = data.quant_signals || {};
+                    document.getElementById('sharpeVal').innerText = quant.sharpe_ratio ?? '--';
+                    document.getElementById('mddVal').innerText = quant.max_drawdown ? `${(quant.max_drawdown * 100).toFixed(1)}%` : '--';
+                    document.getElementById('betaVal').innerText = quant.beta ?? '--';
+                    document.getElementById('varVal').innerText = quant.var_95 ? `${(quant.var_95 * 100).toFixed(1)}%` : '--';
+                    document.getElementById('riskLevel').innerText = quant.risk_level ?? '--';
+
+                    // 3. Render Fundamentals
+                    const fund = data.fundamental_data || {};
+                    document.getElementById('fundamentalScore').innerText = `Score: ${fund.score ?? '--'}`;
+                    const rawFundText = extractText(fund.summary);
+                    document.getElementById('fundamentalContent').innerHTML = marked.parse(rawFundText);
+
+                    // 4. Render Sentiment
+                    const sent = data.sentiment_analysis || {};
+                    document.getElementById('sentimentScore').innerText = `Sentiment: ${sent.sentiment_score ?? '--'}`;
+                    const rawSentText = extractText(sent.summary);
+                    document.getElementById('sentimentContent').innerHTML = marked.parse(rawSentText);
+                } else {
+                    alert('Analysis failed: ' + JSON.stringify(res));
+                }
+            } catch (err) {
+                alert('API request error: ' + err.message);
+            } finally {
+                submitBtn.disabled = false;
+                loading.classList.add('hidden');
+                dashboard.classList.remove('opacity-40');
+            }
+        });
+    </script>
+</body>
+</html>
